@@ -3,10 +3,10 @@
 library('dplyr')
 
 ## get and load project data
-fileurl <- 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip'
-download.file(fileurl, destfile = './data.zip', method = 'curl')
-download.date <- data()
-unzip('data.zip')
+# fileurl <- 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip'
+# download.file(fileurl, destfile = './data.zip', method = 'curl')
+# download.date <- data()
+# unzip('data.zip')
 
 ## read data into R
 features <- read.table('UCI HAR Dataset/features.txt')
@@ -18,7 +18,7 @@ train.y <- read.table('UCI HAR Dataset/train/Y_train.txt', col.names = 'activity
 train.subject <- read.table('UCI HAR Dataset/train/subject_train.txt')
 test.y <- read.table('UCI HAR Dataset/test/Y_test.txt', col.names = 'activity_label')
 
-
+## add descriptive column names
 colnames(activity.labels)[2] <- 'activity'
 # for test data: add column names to each data frame
 colnames(test.subject)[1] <- "subject"
@@ -52,12 +52,14 @@ tidy.data2 <- dcast(tidy.melt, subject + activity ~ variable, mean)
 
 ## rename feature column names; add "mean' to begining of each column name
 var.names <- list()
-for(i in names.test){
+
+for(i in name){
     var.names[[length(var.names) + 1]] <- paste('mean', i, sep = '-')
 }
 
 names(tidy.data2)[3:88] <- var.names
 
+# tidy.data
 tidy.data2
 
 
