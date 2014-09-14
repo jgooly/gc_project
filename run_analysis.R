@@ -1,5 +1,5 @@
 ## set wd
-setwd("/Users/ganguli9795/Documents/github_repositories/gc_project")
+# setwd("/Users/ganguli9795/Documents/github_repositories/gc_project")
 library('dplyr')
 
 ## get and load project data
