@@ -4,13 +4,19 @@ The data from the original experiment (below) was used to calculate the mean of 
 
 ## Original data and experiment:
 Human Activity Recognition Using Smartphones Dataset
+
 Version 1.0
 
 Jorge L. Reyes-Ortiz, Davide Anguita, Alessandro Ghio, Luca Oneto.
+
 Smartlab - Non Linear Complex Systems Laboratory
+
 DITEN - Universit‡ degli Studi di Genova.
+
 Via Opera Pia 11A, I-16145, Genoa, Italy.
+
 activityrecognition@smartlab.ws
+
 www.smartlab.ws
 
 ## Original description of experiment:
@@ -44,16 +50,15 @@ The sensor signals (accelerometer and gyroscope) were pre-processed by applying 
 
 9. 'test/y_test.txt': Test labels.
 
-The following files are available for the train and test data. Their descriptions are equivalent. 
+10. The following files are available for the train and test data. Their descriptions are equivalent.
+'train/subject_train.txt': Each row identifies the subject who performed the activity for each window sample. Its range is from 1 to 30. 
 
-10. 'train/subject_train.txt': Each row identifies the subject who performed the activity for each window sample. Its range is from 1 to 30.
-
-The following file contains the script and results for this analysis.
-
-11. 'Analysis.R': R code that is used to achieve the tidy data and results.
+11. The following file contains the script and results for this analysis.
+'Analysis.R': R code that is used to achieve the tidy data and results.
 
 ## Process and Analysis
 Packages used: Plyr, Reshape2
+
 The original zip file contain files 3-10 were unzipped and placed in the working directory. Files 3 - 10 were read into R using the read.table function with their relative position in the directory. Files X_train.txt, Y_train.txt, X_test.txt and Y_test.txt used regular expressions to select feature variables that either included a mean or standard deviation calculation. Subjects were added to the 'x' train and test data frames and 'y' train and test data frames independently using cbind(). From here, data frames were stacked on each other using rbind(). The merge() is used to match the activity labels with the activity description. The activity labels variable is then removed from the data frame. In preporation for the calculation on the feature variables, all feature variables names are stored in a list. The melt() is used to create a long data frame that groups the data by subject and activity. The dcast() is used to cast the long data frame into a wide format by subject and activity while also calculating the mean of each feature variable for each subject/activity combination. The resulting data frame 'tidy.data2' is returned at the end of the script. 
 
 To read this file into R, use 'read.table('tidy_data_2.txt', header = TRUE)'
