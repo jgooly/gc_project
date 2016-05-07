@@ -1,5 +1,5 @@
 # Project description:
-The data from the original experiment (below) was used to calculate the mean of select features grouped by the subject of the experiment and the activity of said subject. 
+The data from the original experiment (below) was used to calculate the mean of select features taken from accelerometers and gyroscopes of the Samsung Galaxy S II grouped by the subject of the experiment and the activity of said subject. 
 
 
 ## Original data and experiment:
