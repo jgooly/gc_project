@@ -1,71 +1,97 @@
-## set wd
-# setwd("/Users/ganguli9795/Documents/github_repositories/gc_project")
-library('dplyr')
+## Problem statement:
 
-## get and load project data
-# fileurl <- 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip'
-# download.file(fileurl, destfile = './data.zip', method = 'curl')
-# download.date <- data()
-# unzip('data.zip')
+# You should create one R script called run_analysis.R that does the following.
 
-## read data into R
-features <- read.table('UCI HAR Dataset/features.txt')
-activity.labels <- read.table('UCI HAR Dataset/activity_labels.txt')
-test.subject <- read.table('UCI HAR Dataset/test/subject_test.txt')
-test.x <- read.table('UCI HAR Dataset/test/X_test.txt')
-train.x <- read.table('UCI HAR Dataset/train/X_train.txt')
-train.y <- read.table('UCI HAR Dataset/train/Y_train.txt', col.names = 'activity_label')
-train.subject <- read.table('UCI HAR Dataset/train/subject_train.txt')
-test.y <- read.table('UCI HAR Dataset/test/Y_test.txt', col.names = 'activity_label')
+# 1. Merges the training and the test sets to create one data set.
+# 2. Extracts only the measurements on the mean and standard deviation for each measurement.
+# 3. Uses descriptive activity names to name the activities in the data set
+# 4. Appropriately labels the data set with descriptive variable names.
+# 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
-## add descriptive column names
-colnames(activity.labels)[2] <- 'activity'
-# for test data: add column names to each data frame
-colnames(test.subject)[1] <- "subject"
-features.names <- features$V2 ## extract features names from data frame
-names(test.x) <- features.names ## rename column names
-test.x.meanstd <- select(test.x, matches('[Mm]ean|[Ss]td'))
-# for trainning data: add column names to each data frame
-colnames(train.subject)[1] <- 'subject'
-names(train.x) <- features.names
-train.x.meanstd <- select(train.x, matches('[Mm]ean|[Ss]td'))
+# Load libraries
+library(readr)
+library(dplyr)
+library(stringr)
+library(reshape2)
 
-## add subject data to each test and train data frames
-test.x.sub <- cbind(test.x.meanstd, test.subject)
-train.x.sub <- cbind(train.x.meanstd, train.subject)
-## add 'y' data to train and test data frames
-test.x.y.sub <- cbind(test.x.sub, test.y)
-train.x.y.sub <- cbind(train.x.sub, train.y)
+# Read the data
+a_l <- read_table('activity_labels.txt', col_names = c('activity_key', 'activity_label'))
+feats <- read_table('features.txt', col_names = FALSE)  # Need to parse numeric key from column.
 
-## stack train and test data frames on top of each other
-almost.tidy <- rbind(test.x.y.sub, train.x.y.sub)
+subject_test <- read_table('test/subject_test.txt', col_names = 'subject_key')
+X_test <- read_table('test/X_test.txt', col_names = FALSE)  # Neet to add X_test column name and descriptor.
+y_test <- read_table('test/y_test.txt', col_names = 'label')
 
-## merge activity and activity labels
-tidy.data <- merge(almost.tidy, activity.labels, by.x = 'activity_label', by.y = 'V1')
-tidy.data$activity_label <- NULL ## remove activity label column
+subject_train <- read_table('train/subject_train.txt', col_names = 'subject_key')
+X_train <- read_table('train/X_train.txt', col_names = FALSE)  # Neet to add X_train column name and descriptor.
+y_train <- read_table('train/y_train.txt', col_names = 'label')
 
-library('reshape2')
+## Munging ##
 
-name <- names(tidy.data[1:86]) ## store column names that I want to take the mean from
-tidy.melt <- melt(tidy.data, id = c('subject', 'activity'), measure.vars = name)
-tidy.data2 <- dcast(tidy.melt, subject + activity ~ variable, mean)
+# Combine test and train data.
+data <- rbind(X_test, X_train)
 
-## rename feature column names; add "mean' to begining of each column name
-var.names <- list()
+# Combine test and train labels.
+labels <- rbind(y_test, y_train)
 
-for(i in name){
-    var.names[[length(var.names) + 1]] <- paste('mean', i, sep = '-')
+# Combine test and train subject ids
+subject_ids <- rbind(subject_test, subject_train)
+
+# Write function to parse numeric key from feature names in feats data frame and add column names.
+feature_fun <- function(df) {
+  feats <- str_split_fixed(df$X1, ' ', 2)
+  feats_df <- data.frame(feats)
+  names(feats_df) <- c('feature_key', 'feature')
+  feats_df
 }
 
-names(tidy.data2)[3:88] <- var.names
+features <- feature_fun(feats)
 
-# tidy.data
-tidy.data2
+# Create function to add feature names to features
+add_ft_names <- function(df, feature_names_vector) {
+  names(df) <- feature_names_vector
+  df
+}
 
+# Add names to X_test data frame. 
+names(data) <- features$feature
 
+# Add test label key.
+data$label <- labels$label
 
+# Add test label value. 
+data <- left_join(data, a_l, by = c('label'='activity_key'))
 
+# Add subject id to test data.
+data$subject_id <- subject_ids$subject_key
 
+# Hold vars for post-processing of mean and std extraction.
+temp_vars <- data[, c('activity_label', 'subject_id')]
 
+#################################
+### Task 1, 3, and 4 complete ###
+#################################
 
+# Extract mean or std measurements
+data_subset <- data[, which(str_detect(names(data), 'mean|std'))]
+data_clean <- cbind(temp_vars, data_subset)
 
+#######################
+### Task 2 complete ###
+#######################
+
+# Make tidy data.
+data_t <- melt(data_clean, id = c('activity_label', 'subject_id'))
+
+# Calculate mean of value for each activity_label, subject_id, and variable.
+data_t2 <- data_t %>%
+  group_by(subject_id, activity_label, variable) %>%
+  summarise(mean_value = mean(value)) %>%
+  ungroup()
+
+# Write out data_t2 to text file. 
+write.table(data_t2, file = "tidy_data.txt")
+
+#######################
+### Task 5 complete ###
+#######################
