@@ -89,6 +89,9 @@ data_t2 <- data_t %>%
   summarise(mean_value = mean(value)) %>%
   ungroup()
 
+# Return output of tidy data.
+data_t2
+
 # Write out data_t2 to text file. 
 write.table(data_t2, file = "tidy_data.txt", row.names = FALSE)
 
