@@ -18,13 +18,13 @@ library(reshape2)
 a_l <- read_table('activity_labels.txt', col_names = c('activity_key', 'activity_label'))
 feats <- read_table('features.txt', col_names = FALSE)  # Need to parse numeric key from column.
 
-subject_test <- read_table('test/subject_test.txt', col_names = 'subject_key')
-X_test <- read_table('test/X_test.txt', col_names = FALSE)  # Neet to add X_test column name and descriptor.
-y_test <- read_table('test/y_test.txt', col_names = 'label')
+subject_test <- read_table('UCI HAR Dataset/test/subject_test.txt', col_names = 'subject_key')
+X_test <- read_table('UCI HAR Dataset/test/X_test.txt', col_names = FALSE)  # Neet to add X_test column name and descriptor.
+y_test <- read_table('UCI HAR Dataset/test/y_test.txt', col_names = 'label')
 
-subject_train <- read_table('train/subject_train.txt', col_names = 'subject_key')
-X_train <- read_table('train/X_train.txt', col_names = FALSE)  # Neet to add X_train column name and descriptor.
-y_train <- read_table('train/y_train.txt', col_names = 'label')
+subject_train <- read_table('UCI HAR Dataset/train/subject_train.txt', col_names = 'subject_key')
+X_train <- read_table('UCI HAR Dataset/train/X_train.txt', col_names = FALSE)  # Neet to add X_train column name and descriptor.
+y_train <- read_table('UCI HAR Dataset/train/y_train.txt', col_names = 'label')
 
 ## Munging ##
 
@@ -90,7 +90,7 @@ data_t2 <- data_t %>%
   ungroup()
 
 # Write out data_t2 to text file. 
-write.table(data_t2, file = "tidy_data.txt")
+write.table(data_t2, file = "tidy_data.txt", row.names = FALSE)
 
 #######################
 ### Task 5 complete ###
