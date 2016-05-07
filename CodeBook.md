@@ -40,9 +40,10 @@ Additional vectors obtained by averaging the signals in a signal window sample. 
 * tBodyGyroMean
 * tBodyGyroJerkMean
 
-The complete list of variables of each feature vector is available below (88 total):
+The complete list of variables of the cleaned data set are below (88 total):
 
-2. activity
+1. activity_label
+2. subject_id
 3. mean-tBodyAcc-mean()-X
 4. mean-tBodyAcc-mean()-Y
 5. mean-tBodyAcc-mean()-Z
