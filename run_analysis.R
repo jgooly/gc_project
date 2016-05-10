@@ -14,17 +14,19 @@ library(dplyr)
 library(stringr)
 library(reshape2)
 
+setwd('~/UCI HAR Dataset/')
+
 # Read the data
 a_l <- read_table('activity_labels.txt', col_names = c('activity_key', 'activity_label'))
 feats <- read_table('features.txt', col_names = FALSE)  # Need to parse numeric key from column.
 
-subject_test <- read_table('UCI HAR Dataset/test/subject_test.txt', col_names = 'subject_key')
-X_test <- read_table('UCI HAR Dataset/test/X_test.txt', col_names = FALSE)  # Neet to add X_test column name and descriptor.
-y_test <- read_table('UCI HAR Dataset/test/y_test.txt', col_names = 'label')
+subject_test <- read_table('test/subject_test.txt', col_names = 'subject_key')
+X_test <- read_table('test/X_test.txt', col_names = FALSE)  # Neet to add X_test column name and descriptor.
+y_test <- read_table('test/y_test.txt', col_names = 'label')
 
-subject_train <- read_table('UCI HAR Dataset/train/subject_train.txt', col_names = 'subject_key')
-X_train <- read_table('UCI HAR Dataset/train/X_train.txt', col_names = FALSE)  # Neet to add X_train column name and descriptor.
-y_train <- read_table('UCI HAR Dataset/train/y_train.txt', col_names = 'label')
+subject_train <- read_table('train/subject_train.txt', col_names = 'subject_key')
+X_train <- read_table('train/X_train.txt', col_names = FALSE)  # Neet to add X_train column name and descriptor.
+y_train <- read_table('train/y_train.txt', col_names = 'label')
 
 ## Munging ##
 
@@ -83,17 +85,19 @@ data_clean <- cbind(temp_vars, data_subset)
 # Make tidy data.
 data_t <- melt(data_clean, id = c('activity_label', 'subject_id'))
 
-# Calculate mean of value for each activity_label, subject_id, and variable.
-data_t2 <- data_t %>%
-  group_by(subject_id, activity_label, variable) %>%
-  summarise(mean_value = mean(value)) %>%
-  ungroup()
+# Create a 'long' form tidy dataset: Calculate mean of value for each activity_label, subject_id, and variable.
+# data_t2 <- data_t %>%
+#   group_by(subject_id, activity_label, variable) %>%
+#   summarise(mean_value = mean(value)) %>%
+#   ungroup()
 
-# Return output of tidy data.
-data_t2
+# Create a 'wide' form tidy dataset: Calculate mean of value for each activity_label, subject_id, and variable.
+data_t3 <- dcast(data_t2, subject_id + activity_label ~ variable)
+len <- length(names(data_t3))
+names(data_t3)[3:len] <- paste0('mean-', names(data_t3)[3:len])
 
 # Write out data_t2 to text file. 
-write.table(data_t2, file = "tidy_data.txt", row.names = FALSE)
+# write.table(data_t3, file = "tidy_data.txt", row.names = FALSE)
 
 #######################
 ### Task 5 complete ###

@@ -28,9 +28,6 @@ These signals were used to estimate variables of the feature vector for each pat
 The set of variables that were estimated from these signals are:
 * mean(): Mean value
 * std(): Standard deviation
-* meanFreq(): Weighted average of the frequency components to obtain a mean frequency
-* angle(): Angle between to vectors.
-
 
 Additional vectors obtained by averaging the signals in a signal window sample. These are used on the angle() variable:
 
@@ -40,10 +37,12 @@ Additional vectors obtained by averaging the signals in a signal window sample. 
 * tBodyGyroMean
 * tBodyGyroJerkMean
 
-The complete list of variables of the cleaned data set are below (88 total):
+Finally, the summary of subject and activity variables was calculated using the mean of each variable value. The end result is 'wide' tidy data set in txt format. 
 
-1. activity_label
-2. subject_id
+The complete list of variables of the cleaned tidy data set are below (81 total):
+
+1. subject_id
+2. activity_label
 3. mean-tBodyAcc-mean()-X
 4. mean-tBodyAcc-mean()-Y
 5. mean-tBodyAcc-mean()-Z
@@ -123,10 +122,3 @@ The complete list of variables of the cleaned data set are below (88 total):
 79. mean-fBodyBodyGyroJerkMag-mean()
 80. mean-fBodyBodyGyroJerkMag-std()
 81. mean-fBodyBodyGyroJerkMag-meanFreq()
-82. mean-angle(tBodyAccMean,gravity)
-83. mean-angle(tBodyAccJerkMean),gravityMean)
-84. mean-angle(tBodyGyroMean,gravityMean)
-85. mean-angle(tBodyGyroJerkMean,gravityMean)
-86. mean-angle(X,gravityMean)
-87. mean-angle(Y,gravityMean)
-88. mean-angle(Z,gravityMean)
