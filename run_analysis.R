@@ -97,7 +97,7 @@ len <- length(names(data_t3))
 names(data_t3)[3:len] <- paste0('mean-', names(data_t3)[3:len])
 
 # Write out data_t2 to text file. 
-write.table(data_t2, file = "tidy_data2.txt", row.names = FALSE)
+write.table(data_t3, file = "tidy_data.txt", row.names = FALSE)
 
 #######################
 ### Task 5 complete ###
