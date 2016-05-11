@@ -86,10 +86,10 @@ data_clean <- cbind(temp_vars, data_subset)
 data_t <- melt(data_clean, id = c('activity_label', 'subject_id'))
 
 # Create a 'long' form tidy dataset: Calculate mean of value for each activity_label, subject_id, and variable.
-# data_t2 <- data_t %>%
-#   group_by(subject_id, activity_label, variable) %>%
-#   summarise(mean_value = mean(value)) %>%
-#   ungroup()
+data_t2 <- data_t %>%
+  group_by(subject_id, activity_label, variable) %>%
+  summarise(mean_value = mean(value)) %>%
+  ungroup()
 
 # Create a 'wide' form tidy dataset: Calculate mean of value for each activity_label, subject_id, and variable.
 data_t3 <- dcast(data_t2, subject_id + activity_label ~ variable)
@@ -97,7 +97,7 @@ len <- length(names(data_t3))
 names(data_t3)[3:len] <- paste0('mean-', names(data_t3)[3:len])
 
 # Write out data_t2 to text file. 
-# write.table(data_t3, file = "tidy_data.txt", row.names = FALSE)
+write.table(data_t2, file = "tidy_data2.txt", row.names = FALSE)
 
 #######################
 ### Task 5 complete ###
